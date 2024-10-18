@@ -49,19 +49,12 @@ class Settings(ttk.Toplevel):
         # DB HEADING
         heading(frame, "Adatbázis kapcsolat", 0, 0)
 
-        # DB HOST NAME
         self.db_host = Input(frame, "Hoszt:", 1, 0)
-
-        # DB USER NAME
-        self.db_user = Input(frame, "Felhasználónév:", 2, 0)
-
-        # DB USER PASSWORD
-        self.db_password = Input(frame, "Jelszó:", 3, 0, "password")
-        self.show_password_button = ttk.Button(frame, image=self.show_icon, command=self.toggle_password)
-        self.show_password_button.grid(row=3, column=2, padx=5, pady=5)
-
-        # DB NAME
-        self.db_name =Input(frame, "Adatbázis neve:", 4, 0)
+        self.db_name = Input(frame, "Adatbázis neve:", 2, 0)
+        self.db_user = Input(frame, "Felhasználónév:", 3, 0)
+        self.db_pass = Input(frame, "Jelszó:", 4, 0, "password")
+        self.show_password = ttk.Button(frame, image=self.show_icon, command=self.toggle_password)
+        self.show_password.grid(row=3, column=2, padx=5, pady=5)
 
         return frame
 
@@ -96,8 +89,8 @@ class Settings(ttk.Toplevel):
         show_char = "*" if self.password_shown else ""
         icon = self.show_icon if self.password_shown else self.hide_icon
 
-        self.db_password.data.config(show=show_char)
-        self.show_password_button.config(image=icon)
+        self.db_pass.data.config(show=show_char)
+        self.show_password.config(image=icon)
 
         self.password_shown = not self.password_shown
 
@@ -106,10 +99,10 @@ class Settings(ttk.Toplevel):
         config.read(self.config_file)
 
         if "Database" in config:
-            self.db_host.set_data(0, config["Database"].get("Host", ""))
-            self.db_user.set_data(0, config["Database"].get("User", ""))
-            self.db_password.set_data(0, config["Database"].get("Password", ""))
-            self.db_name.set_data(0, config["Database"].get("DB_Name", ""))
+            self.db_host.set_data(0, config["Database"].get("DB_HOST", ""))
+            self.db_name.set_data(0, config["Database"].get("DB_NAME", ""))
+            self.db_user.set_data(0, config["Database"].get("DB_USER", ""))
+            self.db_pass.set_data(0, config["Database"].get("DB_PASS", ""))
 
         if "Application" in config:
             self.full_name.set_data(0, config["Application"].get("Agent_Name", ""))
@@ -123,10 +116,10 @@ class Settings(ttk.Toplevel):
         config = configparser.ConfigParser()
 
         config["Database"] = {
-            "Host": self.db_host.get_data(),
-            "User": self.db_user.get_data(),
-            "Password": self.db_password.get_data(),
-            "DB_Name": self.db_name.get_data(),
+            "DB_HOST": self.db_host.get_data(),
+            "DB_NAME": self.db_name.get_data(),
+            "DB_USER": self.db_user.get_data(),
+            "DB_PASS": self.db_pass.get_data(),
         }
 
         config["Application"] = {
@@ -146,7 +139,7 @@ class Settings(ttk.Toplevel):
     def test_db_connection(self):
         host = self.db_host.get_data()
         user = self.db_user.get_data()
-        password = self.db_password.get_data()
+        password = self.db_pass.get_data()
         database = self.db_name.get_data()
 
         try:
